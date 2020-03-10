@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, right: 15),
-                    child: Text('Samayakuri',
+                    child: Text('BHI Punch Log',
                         style: Theme.of(context).textTheme.title),
                   ),
                 ),
