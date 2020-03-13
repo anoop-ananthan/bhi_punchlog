@@ -1,4 +1,4 @@
-package com.bhi.punchlog.bhi_punchlog
+package com.bhi.punchlog
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
