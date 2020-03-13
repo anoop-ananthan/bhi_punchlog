@@ -1,8 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:bhi_punchlog/data/store.dart';
-import 'package:bhi_punchlog/screens/login/login_background.dart';
-import 'package:toast/toast.dart';
 import 'package:bhi_punchlog/globals.dart' as globals;
+import 'package:bhi_punchlog/screens/login/login_background.dart';
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:toast/toast.dart';
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: <String>[
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+);
 
 class LoginScreen extends StatefulWidget {
   LoginScreen();
@@ -11,39 +19,35 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String username;
+  GoogleSignInAccount _currentUser;
   final AppStore appStore = globals.store;
 
   _LoginScreenState();
 
   void initState() {
     super.initState();
-    this.fetcUsersFromApi();
+    appStore.getUsers();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+      });
+      print(_currentUser);
+    });
+    // _googleSignIn.signInSilently();
   }
 
-  void fetcUsersFromApi() async {
-    await appStore.getUsers();
-  }
-
-  onLoginButtonClicked() {
-    if (checkIfUserExists())
-      Navigator.pushReplacementNamed(context, '/users_list');
-    else
-      showToast("Invalid username");
-  }
-
-  checkIfUserExists() {
+  void onLoginButtonClicked() async {
     try {
-      if (appStore.users.length == 0) return;
-      for (var u in appStore.users) {
-        if (u.username == username) {
-          return true;
-        }
-      }
-      return false;
-    } catch (e) {
-      return false;
+      await _googleSignIn.signIn();
+      Navigator.pushReplacementNamed(context, '/users_list');
+    } catch (error) {
+      print(error);
+      showToast('test');
     }
+  }
+
+  void showToast(String msg) {
+    Toast.show(msg, context, backgroundRadius: 5, backgroundColor: Colors.red);
   }
 
   @override
@@ -69,43 +73,33 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextFormField(
-              onChanged: (text) {
-                username = text;
-              },
-              decoration: InputDecoration(
-                  labelText: "Username",
-                  hintText: "Enter your username",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: BorderSide(),
-                  ),
-                  fillColor: Colors.green),
-              validator: (val) {
-                if (val.length == 0) return "Please enter your username";
-                return null;
-              },
-              keyboardType: TextInputType.text,
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            height: 100,
-            padding: const EdgeInsets.all(20.0),
-            child: FlatButton(
-              onPressed: onLoginButtonClicked,
-              padding: EdgeInsets.all(10),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25)),
-              color: Colors.green,
-              child: Text(
-                'Login',
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .apply(color: Colors.white),
+          OutlineButton(
+            splashColor: Colors.grey,
+            onPressed: onLoginButtonClicked,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            highlightElevation: 0,
+            borderSide: BorderSide(color: Colors.grey),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image(
+                      image: AssetImage("assets/google_logo.png"),
+                      height: 35.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -125,8 +119,24 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  void showToast(String msg) {
-    Toast.show(msg, context, backgroundRadius: 5, backgroundColor: Colors.red);
-  }
 }
+
+// Container(
+//           width: double.infinity,
+//           height: 100,
+//           padding: const EdgeInsets.all(20.0),
+//           child: FlatButton(
+//             onPressed: onLoginButtonClicked,
+//             padding: EdgeInsets.all(10),
+//             shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(25)),
+//             color: Colors.green,
+//             child: Text(
+//               'Login',
+//               style: Theme.of(context)
+//                   .textTheme
+//                   .title
+//                   .apply(color: Colors.white),
+//             ),
+//           ),
+//         ),
