@@ -10,6 +10,10 @@
 .svn/
 .vscode
 
+# Android 
+android/key.properties
+*.jks
+
 # IntelliJ related
 *.iml
 *.ipr
