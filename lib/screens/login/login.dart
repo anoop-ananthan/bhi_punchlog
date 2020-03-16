@@ -3,6 +3,7 @@ import 'package:bhi_punchlog/globals.dart' as globals;
 import 'package:bhi_punchlog/screens/login/login_background.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:package_info/package_info.dart';
 import 'package:toast/toast.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -50,6 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
     Toast.show(msg, context, backgroundRadius: 5, backgroundColor: Colors.red);
   }
 
+  Future<String> getVersionNumber() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
+
+    // Other data you can get:
+    //
+    // 	String appName = packageInfo.appName;
+    // 	String packageName = packageInfo.packageName;
+    //	String buildNumber = packageInfo.buildNumber;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,33 +85,47 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-          OutlineButton(
-            splashColor: Colors.grey,
-            onPressed: onLoginButtonClicked,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-            highlightElevation: 0,
-            borderSide: BorderSide(color: Colors.grey),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image(
-                      image: AssetImage("assets/google_logo.png"),
-                      height: 35.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      'Sign in with Google',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
+          Container(
+            padding: EdgeInsets.only(top: 100),
+            child: OutlineButton(
+              splashColor: Colors.grey,
+              onPressed: onLoginButtonClicked,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40)),
+              highlightElevation: 0,
+              borderSide: BorderSide(color: Colors.grey),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                        image: AssetImage("assets/google_logo.png"),
+                        height: 35.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Sign in with Google',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 30),
+            child: FutureBuilder(
+              future: getVersionNumber(),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) =>
+                  Text(
+                snapshot.hasData ? snapshot.data : "version...",
+                style: TextStyle(color: Colors.black38),
               ),
             ),
           ),
@@ -120,23 +146,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-// Container(
-//           width: double.infinity,
-//           height: 100,
-//           padding: const EdgeInsets.all(20.0),
-//           child: FlatButton(
-//             onPressed: onLoginButtonClicked,
-//             padding: EdgeInsets.all(10),
-//             shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(25)),
-//             color: Colors.green,
-//             child: Text(
-//               'Login',
-//               style: Theme.of(context)
-//                   .textTheme
-//                   .title
-//                   .apply(color: Colors.white),
-//             ),
-//           ),
-//         ),

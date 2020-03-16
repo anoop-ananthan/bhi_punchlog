@@ -1,7 +1,7 @@
 name: bhi_punchlog
 description: A new Flutter project.
 
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -17,6 +17,7 @@ dependencies:
   toast: ^0.1.5
   intl: ^0.16.1
   google_sign_in: ^4.1.4
+  package_info: ^0.4.0+6
 
 dev_dependencies:
   flutter_test:
