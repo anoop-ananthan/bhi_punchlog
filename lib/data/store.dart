@@ -17,7 +17,15 @@ abstract class _AppStore with Store {
   User currentUser;
 
   @observable
-  User profileUser;
+  User _profileUser;
+  User get profileUser {
+    return _profileUser;
+  }
+
+  set profileUser(User value) {
+    if (value == null) throw 'Cannot set null to profile user';
+    _profileUser = value;
+  }
 
   @observable
   int selectedTabIndex = 0;

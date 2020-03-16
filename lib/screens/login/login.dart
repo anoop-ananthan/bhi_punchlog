@@ -34,16 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       print(_currentUser);
     });
-    // _googleSignIn.signInSilently();
+    // _googleSignIn.signInSilently(suppressErrors: true);
   }
 
   void onLoginButtonClicked() async {
     try {
-      await _googleSignIn.signIn();
-      Navigator.pushReplacementNamed(context, '/users_list');
+      var account = await _googleSignIn.signIn();
+      if (account != null)
+        Navigator.pushReplacementNamed(context, '/users_list');
     } catch (error) {
       print(error);
-      showToast('test');
+      showToast('Unable to login');
     }
   }
 
@@ -146,3 +147,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+// NOTE Google account return object
+// {
+//   displayName: Anoop PA,
+//   email: anoop@bluehorizoninfotech.com,
+//   id: 110341825676362200201,
+//   photoUrl: https://lh3.googleusercontent.com/a-/AOh14GhloD9Z7iRLY4xPsR_iwhNDuVeAYeoiRP9VqfIB
+// }

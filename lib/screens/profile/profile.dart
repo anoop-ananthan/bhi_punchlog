@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:bhi_punchlog/data/store.dart';
-import 'package:bhi_punchlog/models/user.dart';
 import 'package:bhi_punchlog/screens/profile/punch_log.dart';
 import 'package:bhi_punchlog/screens/profile/time_calculator.dart';
 import 'package:bhi_punchlog/screens/profile/timing.dart';
@@ -13,8 +12,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = store.profileUser;
-    print(user.punchLog);
     List<Widget> tabs = [
       Timing(),
       PunchLog(),
@@ -26,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.purple,
-          title: Text(user.name),
+          title: Text(store.profileUser.name),
           actions: <Widget>[
             Center(
               child: Padding(
@@ -49,7 +46,6 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   height: 225,
                   color: Colors.green[200],
-                  // color: Colors.purple,
                 ),
                 ClipPath(
                   clipper: CurvedClipper(),
@@ -74,10 +70,10 @@ class ProfileScreen extends StatelessWidget {
                         child: toHero.child,
                       );
                     },
-                    tag: '${user.username}',
+                    tag: '${store.profileUser.username}',
                     child: CircleAvatar(
                       radius: 105,
-                      backgroundImage: NetworkImage(user.photoUrl),
+                      backgroundImage: NetworkImage(store.profileUser.photoUrl),
                     ),
                   ),
                 )

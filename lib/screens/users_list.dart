@@ -1,13 +1,33 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'dart:async';
+
 import 'package:bhi_punchlog/data/store.dart';
 import 'package:bhi_punchlog/globals.dart' as globals;
+import 'package:bhi_punchlog/models/user.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
 class UsersListScreen extends StatelessWidget {
   final AppStore store = globals.store;
-  UsersListScreen();
+  UsersListScreen() {
+    Timer.periodic(
+      new Duration(minutes: 1),
+      (timer) async {
+        try {
+          await store.getUsers(date: store.selectedDate);
+          User oldUser = store.profileUser;
+          User newUser =
+              store.users.firstWhere((u) => oldUser.username == u.username);
+          store.profileUser = newUser;
+        } catch (e) {
+          print(".........................................");
+          print(e);
+          print(".........................................");
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +67,7 @@ class UsersListScreen extends StatelessWidget {
                   var dateText =
                       DateFormat("MMM d, EEEE").format(store.selectedDate);
                   Toast.show('Viewing data on $dateText', context,
-                      duration: 1,
+                      duration: 2,
                       backgroundColor: Colors.green,
                       backgroundRadius: 5);
                 }
