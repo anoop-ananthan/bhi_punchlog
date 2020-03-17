@@ -1,0 +1,30 @@
+name: bhi_punchlog
+description: A new Flutter project.
+
+version: 0.1.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mobx: 0.3.10
+  flutter_mobx: ^0.3.4
+  flare_flutter: ^1.8.3
+  cupertino_icons: ^0.1.2
+  http: ^0.12.0+3
+  toast: ^0.1.5
+  intl: ^0.16.1
+  google_sign_in: ^4.1.4
+  package_info: ^0.4.0+6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    # Images
+    - assets/
