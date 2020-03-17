@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bhi_punchlog/data/store.dart';
 import 'package:bhi_punchlog/globals.dart' as globals;
 import 'package:bhi_punchlog/models/user.dart';
+import 'package:bhi_punchlog/widgets/inOrOut.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class UsersListScreen extends StatelessWidget {
         try {
           await store.getUsers(date: store.selectedDate);
           User oldUser = store.profileUser;
+          if (oldUser == null) return;
           User newUser =
               store.users.firstWhere((u) => oldUser.username == u.username);
           store.profileUser = newUser;
@@ -79,29 +81,32 @@ class UsersListScreen extends StatelessWidget {
           itemCount: store.users.length,
           itemBuilder: (context, i) {
             return ListTile(
-              onTap: () {
-                store.profileUser = store.users[i];
-                Navigator.pushNamed(context, '/profile');
-              },
-              leading: Hero(
-                tag: '${store.users[i].username}',
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(store.users[i].photoUrl),
+                onTap: () {
+                  store.profileUser = store.users[i];
+                  Navigator.pushNamed(context, '/profile');
+                },
+                leading: Hero(
+                  tag: '${store.users[i].username}',
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(store.users[i].photoUrl),
+                  ),
                 ),
-              ),
-              title: Text(store.users[i].name),
-              subtitle: Text(store.users[i].role),
-              trailing: Text(
-                store.users[i].isPresent ? 'In' : 'Out',
-                style: TextStyle(
-                    color: store.users[i].isPresent
-                        ? Colors.greenAccent
-                        : Colors.redAccent),
-              ),
-            );
+                title: Text(store.users[i].name),
+                subtitle: Text(store.users[i].role),
+                trailing: InOrOut(
+                  condition: getCondition(store.users[i]),
+                ));
           },
         ),
       ),
     );
+  }
+
+  Condition getCondition(User user) {
+    if (user.punchLog.length == 0) return Condition.ABSENT;
+    if (user.isPresent)
+      return Condition.IN;
+    else
+      return Condition.OUT;
   }
 }
