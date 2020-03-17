@@ -17,13 +17,16 @@ class InOrOut extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundColor: getBackgroundColor(),
-      child: Text(
-        getContent(),
-        style: Theme.of(context).textTheme.subtitle.copyWith(
-              letterSpacing: 1,
-              color: getTextColor(),
+      foregroundColor: getTextColor(),
+      child: condition == Condition.ABSENT
+          ? Icon(getIcon(false))
+          : Text(
+              getContent(),
+              style: Theme.of(context).textTheme.subtitle.copyWith(
+                    letterSpacing: 1,
+                    color: getTextColor(),
+                  ),
             ),
-      ),
     );
   }
 
@@ -49,7 +52,7 @@ class InOrOut extends StatelessWidget {
         return Colors.green[900];
         break;
       case Condition.ABSENT:
-        return Colors.grey[800];
+        return Colors.grey[600];
         break;
       case Condition.OUT:
         return Colors.red[900];
@@ -72,21 +75,17 @@ class InOrOut extends StatelessWidget {
     }
   }
 
-  getIcon() {}
-
-  Map<String, Color> getColors() {
-    switch (this.condition) {
-      case Condition.IN:
-        return {"text": Colors.green[900], "background": Colors.green[100]};
-        break;
-      case Condition.ABSENT:
-        return {"text": Colors.red[900], "background": Colors.red[100]};
-        break;
-      case Condition.OUT:
-        return {"text": Colors.red[900], "background": Colors.red[100]};
-        break;
-      default:
-        return {"text": Colors.green[900], "background": Colors.green[100]};
-    }
+// TODO Find out if the day is holiday
+  getIcon(bool isHoliday) {
+    IconData icon;
+    DateTime now = new DateTime.now();
+    if (now.hour > 20 && now.hour < 10) icon = Icons.hotel;
+    if (now.hour > 10 && now.hour < 11) icon = Icons.directions_bus;
+    if (now.hour > 11 && now.hour < 1) icon = Icons.restaurant;
+    if (now.hour > 1 && now.hour < 20) icon = Icons.hotel;
+    if (now.weekday == DateTime.sunday || now.weekday == DateTime.saturday)
+      icon = Icons.weekend;
+    if (isHoliday) icon = Icons.beach_access;
+    return icon;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bhi_punchlog/widgets/inOrOut.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -11,30 +12,14 @@ class PunchLog extends StatelessWidget {
     return DateFormat('h:mm a').format(dateTime);
   }
 
-  Widget inOrOut(context, position, length) {
+  Widget getAvatar(context, position, length) {
     var i = length - position;
+    if (length == 0)
+      return InOrOut(condition: Condition.ABSENT, isIconVisible: true);
     if (i % 2 == 0) {
-      return CircleAvatar(
-        backgroundColor: Colors.red[50],
-        child: Text(
-          'Out',
-          style: Theme.of(context).textTheme.subtitle.copyWith(
-                letterSpacing: -0.60,
-                color: Colors.red,
-              ),
-        ),
-      );
+      return InOrOut(condition: Condition.OUT, isIconVisible: false);
     } else {
-      return CircleAvatar(
-        backgroundColor: Colors.green[50],
-        child: Text(
-          'IN',
-          style: Theme.of(context).textTheme.subtitle.copyWith(
-                letterSpacing: 1,
-                color: Colors.green[900],
-              ),
-        ),
-      );
+      return InOrOut(condition: Condition.IN, isIconVisible: false);
     }
   }
 
@@ -53,8 +38,8 @@ class PunchLog extends StatelessWidget {
             return ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.green[100],
-                child:
-                    this.inOrOut(context, i, store.profileUser.punchLog.length),
+                child: this
+                    .getAvatar(context, i, store.profileUser.punchLog.length),
               ),
               title: Text(
                 this.formatTime(store.profileUser.punchLog[i].punchtime),

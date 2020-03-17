@@ -95,7 +95,6 @@ class UsersListScreen extends StatelessWidget {
                 subtitle: Text(store.users[i].role),
                 trailing: InOrOut(
                   condition: getCondition(store.users[i]),
-                  isIconVisible: false,
                 ));
           },
         ),
